@@ -1,6 +1,11 @@
-def main() -> int:
-    return 0
+import asyncio
+
+from config import *
+
+
+async def main() -> None:
+    await dispatcher.start_polling(BOT)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
