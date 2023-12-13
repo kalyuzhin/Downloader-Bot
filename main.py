@@ -1,4 +1,5 @@
 from config import *
+from handlers import *
 
 
 async def main() -> None:
