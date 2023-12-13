@@ -10,5 +10,5 @@ def create_inline_keyboard(url: str):
     """
     builder = InlineKeyboardBuilder()
     for elem in get_resolutions(url):
-        builder.button(text=f"{elem}", callback_data=f"set:{elem}")
+        builder.button(text=f"{elem}", callback_data=f"set:{url},{elem}")
     return builder

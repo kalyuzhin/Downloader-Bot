@@ -11,7 +11,7 @@ async def command_start_handler(message: Message) -> None:
     :return:
     """
     await message.answer(
-        f"{message.from_user.full_name}!\nЭтот бот позволяет скачивать различные медиа из YouTube, VK и Instagram!\n\n"
+        f"Привет, {message.from_user.full_name}!\nЭтот бот позволяет скачивать различные медиа из YouTube, VK и Instagram!\n\n"
         f"Просто пришли ссылку на видео, которое хочешь скачать :)")
 
 
@@ -27,3 +27,9 @@ async def parse_message_handler(message: Message) -> None:
     if len(parser.youtube_parse(message.text)) != 0:
         await message.answer("Выберите подходящее вам качество видео:",
                              reply_markup=inline_keyboards.create_inline_keyboard(message.text).as_markup())
+
+
+@dispatcher.callback_query()
+async def download_youtube_video(callback: CallbackQuery):
+    await BOT.send_video(chat_id=callback.from_user.id,
+                         video=FSInputFile(youtube_downloader.download_youtube_video(callback)))

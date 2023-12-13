@@ -2,6 +2,11 @@ import re
 
 
 def youtube_parse(url: str) -> str:
+    """
+    Проверяет строку на совпадение с паттерном ссылки YouTube
+    :param url:
+    :return:
+    """
     pattern = r'(https:://)?(www\.)?youtu\.?be\.com/.+'
     m = re.search(pattern, url)
     if m is None:
@@ -11,6 +16,11 @@ def youtube_parse(url: str) -> str:
 
 
 def vk_parse(url: str) -> str:
+    """
+    Проверяет строку на совпадение с паттерном ссылки VK
+    :param url:
+    :return:
+    """
     pattern = r'(https:://)?vk\.com/video.+'
     m = re.search(pattern, url)
     if m is None:
