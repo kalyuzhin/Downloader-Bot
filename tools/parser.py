@@ -21,7 +21,7 @@ def vk_parse(url: str) -> str:
     :param url:
     :return:
     """
-    pattern = r'(https:://)?vk\.com/video.+'
+    pattern = r'(https:://)?vk\.com/video(-?\d+)_(\d+).*'
     m = re.search(pattern, url)
     if m is None:
         return ''
