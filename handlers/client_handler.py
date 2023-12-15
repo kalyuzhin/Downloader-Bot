@@ -23,8 +23,9 @@ async def parse_message_handler(message: Message) -> None:
     :return:
     """
     if len(parser.vk_parse(message.text)) != 0:
-        pass
-    if len(parser.youtube_parse(message.text)) != 0:
+        await message.delete()
+        await message.answer_video(video=FSInputFile(vk_downloader.get_player_url(message)))
+    elif len(parser.youtube_parse(message.text)) != 0:
         await message.delete()
         await message.answer("Выберите подходящее вам качество видео:",
                              reply_markup=inline_keyboards.create_inline_keyboard(message.text).as_markup())
