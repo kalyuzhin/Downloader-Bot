@@ -8,9 +8,9 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.utils.markdown import hitalic, hbold, hstrikethrough
 
-file = open('config.txt')
-TOKEN = file.readline().strip()  # Получение токена из файла(я знаю, что лучше пользоваться переменными окружения)
-VK_TOKEN = file.readline().strip()
+with open('config.txt') as file:
+    TOKEN = file.readline().strip()  # Получение токена из файла(я знаю, что лучше пользоваться переменными окружения)
+    VK_TOKEN = file.readline().strip()
 
 dispatcher = Dispatcher()
 
