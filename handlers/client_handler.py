@@ -32,8 +32,16 @@ async def parse_message_handler(message: Message) -> None:
 
 
 @dispatcher.callback_query()
-async def download_youtube_video(callback: CallbackQuery):
+async def download_youtube_video(callback: CallbackQuery) -> None:
+    """
+    Отправка видео с YouTube пользователю
+    :param callback:
+    :return:
+    """
     await callback.message.delete()
-    # await callback.message.answer("Подождите...\nВыполняется загрузка")
+    await callback.message.answer("Подождите...\nВыполняется загрузка")
+    file = youtube_downloader.download_youtube_video(callback);
     await BOT.send_video(chat_id=callback.from_user.id,
-                         video=FSInputFile(youtube_downloader.download_youtube_video(callback)))
+                         video=FSInputFile(file))
+    await callback.message.delete()
+    os.remove(file)

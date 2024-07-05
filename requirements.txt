@@ -1,3 +1,5 @@
 aiogram
 pytube
 requests
+selenium
+beautifulsoup4

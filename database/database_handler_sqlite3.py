@@ -22,4 +22,3 @@ def insert_user_into_database(user_id: int) -> None:
 def insert_url_into_database(message: Message) -> None:
     cur.execute(f"INSERT INTO users_data (USER_ID,URL) VALUES (?,?)", (message.from_user.id, message.text,))
     connect.commit()
-
