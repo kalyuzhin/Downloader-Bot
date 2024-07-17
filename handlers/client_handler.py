@@ -23,7 +23,8 @@ async def parse_message_handler(message: Message) -> None:
     :return:
     """
     if len(parser.vk_parse(message.text)) != 0:
-        resolutions = vk_downloader.parse_page(message.text)
+        # resolutions = vk_downloader.parse_page(message.text)
+        resolutions = vk_downloader.download_selenium(message.text)
         await message.delete()
         await message.answer('Выберите подходящее вам качество видео:',
                              reply_markup=inline_keyboards.create_inline_keyboard_vk(resolutions).as_markup())

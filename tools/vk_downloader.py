@@ -57,13 +57,13 @@ def download_selenium(url: str):
     else:
         url = 'https://m.' + url[url.find('vk'):]
     driver.get(url)
-    driver.quit()
+    # driver.quit()
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     download = soup.find('div', attrs={'id': 'theme_color_shim'}).findNext('script').text
     # print(get_resolutions(download))
+    driver.quit()
     return get_resolutions(download)
     # driver.get(download[index + 10:download.find('\"', index + 10)])
-    # driver.quit()
 
 
 def parse_page(url: str):
