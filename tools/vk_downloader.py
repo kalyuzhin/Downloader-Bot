@@ -2,7 +2,7 @@ import re
 import requests
 
 from config import VK_TOKEN, COOKIE
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
@@ -44,7 +44,7 @@ def get_resolutions(soup: str) -> dict:
     while index != -1:
         if soup[index:index + 7] in d.keys():
             break
-        d[soup[index:index + 7]] = soup[index + 10:soup.find("\"", index + 10)]
+        d[soup[index:index + 7]] = soup[index + 10:soup.find("\"", index + 10)].replace('\\', '').replace('\\/?', '//?')
         index = soup.find('mp4', index + 1)
     return d
 
@@ -76,3 +76,9 @@ def parse_page(url: str):
     soup = BeautifulSoup(request.text, 'html.parser')
     script = soup.find('div', attrs={'id': 'theme_color_shim'}).findNext('script').text
     return get_resolutions(script)
+
+
+def download(url: str, user_id: int):
+    request = requests.get(url, headers=headers)
+    with open(f'downloads/{user_id}.mp4', 'wb') as f:
+        f.write(request.content)
