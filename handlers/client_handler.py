@@ -23,12 +23,15 @@ async def parse_message_handler(message: Message) -> None:
     :return:
     """
     if len(parser.vk_parse(message.text)) != 0:
+        resolutions = vk_downloader.parse_page(message.text)
         await message.delete()
-        await message.answer_video(video=FSInputFile(vk_downloader.get_player_url(message)))
+        await message.answer('Выберите подходящее вам качество видео:',
+                             reply_markup=inline_keyboards.create_inline_keyboard_vk(resolutions).as_markup())
+        # await message.answer_video(video=FSInputFile(vk_downloader.get_player_url(message)))
     elif len(parser.youtube_parse(message.text)) != 0:
         await message.delete()
         await message.answer("Выберите подходящее вам качество видео:",
-                             reply_markup=inline_keyboards.create_inline_keyboard(message.text).as_markup())
+                             reply_markup=inline_keyboards.create_inline_keyboard_yt(message.text).as_markup())
 
 
 @dispatcher.callback_query()
@@ -40,7 +43,7 @@ async def download_youtube_video(callback: CallbackQuery) -> None:
     """
     await callback.message.delete()
     await callback.message.answer("Подождите...\nВыполняется загрузка")
-    file = youtube_downloader.download_youtube_video(callback);
+    file = youtube_downloader.download_youtube_video(callback)
     await BOT.send_video(chat_id=callback.from_user.id,
                          video=FSInputFile(file))
     await callback.message.delete()

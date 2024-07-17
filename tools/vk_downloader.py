@@ -1,10 +1,19 @@
 import re
 import requests
 
-from config import VK_TOKEN
+from config import VK_TOKEN, COOKIE
 from aiogram.types import Message
 from bs4 import BeautifulSoup
 from selenium import webdriver
+
+headers = {
+    'Accept': '*/*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    'Connection': 'keep-alive',
+    'Cookie': COOKIE,
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0',
+}
 
 
 def get_player_url(message: Message) -> str:
@@ -29,16 +38,41 @@ def download_video(url: str, filename: str) -> None:
                 f.write(chunk)
 
 
+def get_resolutions(soup: str) -> dict:
+    d = dict()
+    index = soup.find('mp4')
+    while index != -1:
+        if soup[index:index + 7] in d.keys():
+            break
+        d[soup[index:index + 7]] = soup[index + 10:soup.find("\"", index + 10)]
+        index = soup.find('mp4', index + 1)
+    return d
+
+
 def download_selenium(url: str):
     driver = webdriver.Firefox()
-    pattern = r'https:://m\.vk\.com/video(-?\d+)_(\d+).*'
+    pattern = r'https://m\.vk\.com/video(-?\d+)_(\d+).*'
     if re.match(pattern, url):
         pass
     else:
-        url = 'https:://m.' + url[url.find('vk'):]
+        url = 'https://m.' + url[url.find('vk'):]
     driver.get(url)
+    driver.quit()
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     download = soup.find('div', attrs={'id': 'theme_color_shim'}).findNext('script').text
-    index = download.find('mp4_720')
-    driver.get(download[index + 10:download.find('\"', index + 10)])
-    driver.quit()
+    # print(get_resolutions(download))
+    return get_resolutions(download)
+    # driver.get(download[index + 10:download.find('\"', index + 10)])
+    # driver.quit()
+
+
+def parse_page(url: str):
+    pattern = r'https://m\.vk\.com/video(-?\d+)_(\d+).*'
+    if re.match(pattern, url):
+        pass
+    else:
+        url = 'https://m.' + url[url.find('vk'):]
+    request = requests.get(url, headers=headers)
+    soup = BeautifulSoup(request.text, 'html.parser')
+    script = soup.find('div', attrs={'id': 'theme_color_shim'}).findNext('script').text
+    return get_resolutions(script)
